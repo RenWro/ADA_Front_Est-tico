@@ -1,1 +1,0 @@
-# ADA_Front_Est-tico

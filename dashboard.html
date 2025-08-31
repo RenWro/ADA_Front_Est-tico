@@ -1,432 +1,246 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+<!--!
+	@file dashboard.html
+	@brief Página principal do dashboard da aplicação GloboTech
+	@details Página de gerenciamento de usuários e listas de tarefas
+	@author GloboTech Team
+	@version 1.0
+-->
+
+<!--!
+	@section head_section Configurações do documento
+	@brief Define metadados, título e referências CSS
+-->
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - To-Do Manager</title>
-    <style>
-        /* Reset e base */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        /* Header */
-        .header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-        }
-
-        .logout-btn {
-            padding: 0.5rem 1rem;
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-
-        .logout-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Main content */
-        .main-content {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Seções */
-        .section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Formulário de usuário */
-        .user-form {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-input {
-            padding: 0.75rem;
-            border: 2px solid #e1e5e9;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            background: white;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .file-input {
-            padding: 0.5rem;
-            border: 2px dashed #e1e5e9;
-            border-radius: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .file-input:hover {
-            border-color: #667eea;
-            background: rgba(102, 126, 234, 0.05);
-        }
-
-        /* Botões */
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            justify-content: center;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-danger {
-            background: rgba(239, 68, 68, 0.1);
-            color: #ef4444;
-            border: 2px solid #ef4444;
-        }
-
-        .btn-danger:hover {
-            background: #ef4444;
-            color: white;
-        }
-
-        /* Lista de tarefas */
-        .task-lists {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .task-list-card {
-            background: rgba(255, 255, 255, 0.8);
-            border: 2px solid #e1e5e9;
-            border-radius: 12px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-        }
-
-        .task-list-card:hover {
-            border-color: #667eea;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .list-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .list-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #333;
-        }
-
-        .list-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .btn-small {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.8rem;
-            min-width: auto;
-        }
-
-        .list-stats {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
-        }
-
-        /* Formulário nova lista */
-        .new-list-form {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-
-        .new-list-input {
-            flex: 1;
-        }
-
-        /* Status indicadores */
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 0.5rem;
-        }
-
-        .status-active {
-            background: #10b981;
-        }
-
-        .status-pending {
-            background: #f59e0b;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header {
-                padding: 1rem;
-            }
-
-            .main-content {
-                padding: 1rem;
-            }
-
-            .user-form {
-                grid-template-columns: 1fr;
-            }
-
-            .task-lists {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Dashboard - To-Do Manager</title>
+	
+	<!-- Bootstrap 4.3.1 (apenas para resumo geral) -->
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	
+	<link rel="stylesheet" href="style.css"/>
 </head>
+
+<!--!
+	@section body_section Corpo da página do dashboard
+	@brief Contém header, navegação e conteúdo principal
+-->
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="logo">📋 TaskManager</div>
-        <div class="user-info">
-            <div class="user-avatar">JD</div>
-            <span>João Silva</span>
-            <a href="login.html" class="logout-btn">Sair</a>
-        </div>
-    </header>
+	<!--!
+		@section header_section Cabeçalho da aplicação
+		@brief Barra superior com logo, informações do usuário e logout
+	-->
+	<header class="header">
+		<!--!
+			@subsection logo_section Logo da aplicação
+			@brief Exibe o nome e ícone do sistema GloboTech
+		-->
+		<div class="logo">📋 GloboTech</div>
+		
+		<!--!
+			@subsection user_info_section Informações do usuário
+			@brief Mostra avatar, nome do usuário e botão de sair
+		-->
+		<div class="user-info">
+			<div class="user-avatar">JD</div>
+			<span class="user-name">João Silva</span>
+			<a href="login.html" class="logout-btn">Sair</a>
+		</div>
+	</header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <!-- Seção Criar Usuário -->
-        <section class="section">
-            <h2 class="section-title">👤 Criar Novo Usuário</h2>
-            
-            <form class="user-form">
-                <div class="form-group">
-                    <input type="text" class="form-input" placeholder="Nome completo" required>
-                </div>
-                
-                <div class="form-group">
-                    <input type="email" class="form-input" placeholder="Email ou usuário" required>
-                </div>
-                
-                <div class="form-group">
-                    <input type="password" class="form-input" placeholder="Senha" required>
-                </div>
-                
-                <div class="form-group">
-                    <label class="file-input">
-                        📷 Selecionar foto
-                        <input type="file" accept="image/*" style="display: none;">
-                    </label>
-                </div>
-            </form>
-            
-            <button class="btn btn-primary">Criar Usuário</button>
-        </section>
+	<!--!
+		@section main_content Conteúdo principal do dashboard
+		@brief Container com todas as seções funcionais da aplicação
+	-->
+	<main class="main-content">
+		<!--!
+			@section create_user_section Seção de criação de usuário
+			@brief Formulário para cadastro de novos usuários no sistema
+		-->
+		<section class="section">
+			<h2 class="section-title">👤 Criar Novo Usuário</h2>
+			
+			<!--!
+				@subsection user_form Formulário de usuário
+				@brief Campos para nome, email, senha e foto do usuário
+			-->
+			<form class="user-form">
+				<div class="dashboard-form-group">
+					<input type="text" class="dashboard-form-input" placeholder="Nome completo" required>
+				</div>
+				
+				<div class="dashboard-form-group">
+					<input type="email" class="dashboard-form-input" placeholder="Email ou usuário" required>
+				</div>
+				
+				<div class="dashboard-form-group">
+					<input type="password" class="dashboard-form-input" placeholder="Senha" required>
+				</div>
+				
+				<div class="dashboard-form-group">
+					<label class="file-input">
+						📷 Selecionar foto
+						<input type="file" accept="image/*" style="display: none;">
+					</label>
+				</div>
+			</form>
+			
+			<!--!
+				@subsection create_user_button Botão de criação
+				@brief Submete o formulário para criar novo usuário
+			-->
+			<button class="btn btn-primary">Criar Usuário</button>
+		</section>
 
-        <!-- Seção Gerenciar Listas -->
-        <section class="section">
-            <h2 class="section-title">📝 Minhas Listas de Tarefas</h2>
-            
-            <!-- Form para nova lista -->
-            <div class="new-list-form">
-                <input type="text" class="form-input new-list-input" placeholder="Nome da nova lista">
-                <button class="btn btn-primary">➕ Criar Lista</button>
-            </div>
-            
-            <!-- Lista de listas existentes -->
-            <div class="task-lists">
-                <!-- Lista 1 -->
-                <div class="task-list-card">
-                    <div class="list-header">
-                        <h3 class="list-title">
-                            <span class="status-indicator status-active"></span>
-                            Trabalho
-                        </h3>
-                        <div class="list-actions">
-                            <a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
-                            <button class="btn btn-danger btn-small">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="list-stats">
-                        📊 5 tarefas • 3 concluídas
-                    </div>
-                    <p>Lista de tarefas relacionadas ao trabalho e projetos profissionais.</p>
-                </div>
+		<!--!
+			@section task_lists_section Seção de gerenciamento de listas
+			@brief Interface para criar e gerenciar listas de tarefas
+		-->
+		<section class="section">
+			<h2 class="section-title">📝 Minhas Listas de Tarefas</h2>
+			
+			<!--!
+				@subsection new_list_form Formulário para nova lista
+				@brief Campo de input e botão para criar nova lista de tarefas
+			-->
+			<div class="new-list-form">
+				<input type="text" class="dashboard-form-input new-list-input" placeholder="Nome da nova lista">
+				<a href="todo.html" class="btn btn-primary">➕ Criar Lista</a>
+			</div>
+			
+			<!--!
+				@subsection existing_lists Listas existentes
+				@brief Grid com cards das listas de tarefas já criadas
+			-->
+			<div class="task-lists">
+				<!--!
+					@subsubsection work_list Lista de trabalho
+					@brief Card da lista de tarefas relacionadas ao trabalho
+				-->
+				<div class="task-list-card">
+					<div class="list-header">
+						<h3 class="list-title">
+							<span class="status-indicator status-active"></span>
+							Trabalho
+						</h3>
+						<div class="list-actions">
+							<a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
+							<button class="btn btn-danger btn-small">🗑️</button>
+						</div>
+					</div>
+					<div class="list-stats">
+						📊 5 tarefas • 3 concluídas
+					</div>
+					<p>Lista de tarefas relacionadas ao trabalho e projetos profissionais.</p>
+				</div>
 
-                <!-- Lista 2 -->
-                <div class="task-list-card">
-                    <div class="list-header">
-                        <h3 class="list-title">
-                            <span class="status-indicator status-pending"></span>
-                            Pessoal
-                        </h3>
-                        <div class="list-actions">
-                            <a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
-                            <button class="btn btn-danger btn-small">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="list-stats">
-                        📊 3 tarefas • 1 concluída
-                    </div>
-                    <p>Tarefas pessoais, compras e atividades do dia a dia.</p>
-                </div>
+				<!--!
+					@subsubsection personal_list Lista pessoal
+					@brief Card da lista de tarefas pessoais
+				-->
+				<div class="task-list-card">
+					<div class="list-header">
+						<h3 class="list-title">
+							<span class="status-indicator status-pending"></span>
+							Pessoal
+						</h3>
+						<div class="list-actions">
+							<a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
+							<button class="btn btn-danger btn-small">🗑️</button>
+						</div>
+					</div>
+					<div class="list-stats">
+						📊 3 tarefas • 1 concluída
+					</div>
+					<p>Tarefas pessoais, compras e atividades do dia a dia.</p>
+				</div>
 
-                <!-- Lista 3 -->
-                <div class="task-list-card">
-                    <div class="list-header">
-                        <h3 class="list-title">
-                            <span class="status-indicator status-active"></span>
-                            Estudos
-                        </h3>
-                        <div class="list-actions">
-                            <a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
-                            <button class="btn btn-danger btn-small">🗑️</button>
-                        </div>
-                    </div>
-                    <div class="list-stats">
-                        📊 8 tarefas • 2 concluídas
-                    </div>
-                    <p>Cursos, leituras e materiais de estudo organizados.</p>
-                </div>
-            </div>
-        </section>
+				<!--!
+					@subsubsection studies_list Lista de estudos
+					@brief Card da lista de tarefas relacionadas a estudos
+				-->
+				<div class="task-list-card">
+					<div class="list-header">
+						<h3 class="list-title">
+							<span class="status-indicator status-active"></span>
+							Estudos
+						</h3>
+						<div class="list-actions">
+							<a href="todo.html" class="btn btn-secondary btn-small">✏️ Abrir</a>
+							<button class="btn btn-danger btn-small">🗑️</button>
+						</div>
+					</div>
+					<div class="list-stats">
+						📊 8 tarefas • 2 concluídas
+					</div>
+					<p>Cursos, leituras e materiais de estudo organizados.</p>
+				</div>
+			</div>
+		</section>
 
-        <!-- Seção Estatísticas Rápidas -->
-        <section class="section">
-            <h2 class="section-title">📈 Resumo Geral</h2>
-            
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-                <div style="text-align: center; padding: 1rem; background: rgba(102, 126, 234, 0.1); border-radius: 8px;">
-                    <div style="font-size: 2rem; font-weight: 600; color: #667eea;">3</div>
-                    <div style="color: #666;">Listas Ativas</div>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 8px;">
-                    <div style="font-size: 2rem; font-weight: 600; color: #10b981;">16</div>
-                    <div style="color: #666;">Total de Tarefas</div>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem; background: rgba(245, 158, 11, 0.1); border-radius: 8px;">
-                    <div style="font-size: 2rem; font-weight: 600; color: #f59e0b;">6</div>
-                    <div style="color: #666;">Concluídas</div>
-                </div>
-                
-                <div style="text-align: center; padding: 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 8px;">
-                    <div style="font-size: 2rem; font-weight: 600; color: #ef4444;">10</div>
-                    <div style="color: #666;">Pendentes</div>
-                </div>
-            </div>
-        </section>
-    </main>
+		<!--!
+			@section statistics_section Seção de estatísticas
+			@brief Exibe resumo geral das listas e tarefas do usuário
+		-->
+		<section class="section">
+			<h2 class="section-title">📈 Resumo Geral</h2>
+			
+			<!--!
+				@subsection stats_grid Grid de estatísticas
+				@brief Cards com métricas principais: listas, tarefas, concluídas, pendentes
+			-->
+			<div class="row">
+				<!--!
+					@subsubsection active_lists_stat Estatística de listas ativas
+				-->
+				<div class="col-6 col-md-3 mb-3">
+					<div class="card text-center border-0" style="background: rgba(102, 126, 234, 0.1);">
+						<div class="card-body py-3">
+							<h3 class="display-4 font-weight-bold text-primary mb-1">3</h3>
+							<p class="card-text text-muted mb-0">Listas Ativas</p>
+						</div>
+					</div>
+				</div>
+				
+				<!--!
+					@subsubsection total_tasks_stat Estatística de total de tarefas
+				-->
+				<div class="col-6 col-md-3 mb-3">
+					<div class="card text-center border-0" style="background: rgba(16, 185, 129, 0.1);">
+						<div class="card-body py-3">
+							<h3 class="display-4 font-weight-bold text-success mb-1">16</h3>
+							<p class="card-text text-muted mb-0">Total de Tarefas</p>
+						</div>
+					</div>
+				</div>
+				
+				<!--!
+					@subsubsection completed_tasks_stat Estatística de tarefas concluídas
+				-->
+				<div class="col-6 col-md-3 mb-3">
+					<div class="card text-center border-0" style="background: rgba(245, 158, 11, 0.1);">
+						<div class="card-body py-3">
+							<h3 class="display-4 font-weight-bold text-warning mb-1">6</h3>
+							<p class="card-text text-muted mb-0">Concluídas</p>
+						</div>
+					</div>
+				</div>
+				
+				<!--!
+					@subsubsection pending_tasks_stat Estatística de tarefas pendentes
+				-->
+				<div class="col-6 col-md-3 mb-3">
+					<div class="card text-center border-0" style="background: rgba(239, 68, 68, 0.1);">
+						<div class="card-body py-3">
+							<h3 class="display-4 font-weight-bold text-danger mb-1">10</h3>
+							<p class="card-text text-muted mb-0">Pendentes</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+	</main>
 </body>
 </html>
